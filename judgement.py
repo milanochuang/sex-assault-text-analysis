@@ -60,7 +60,7 @@ def data_cleaner(string):
 1. 近十年判決書會存在htmlcontent標籤
 2. 十年以前的判決書會存在text-pre text-pre-in標籤
 """
-def judgementGrabber_1(judgeUrl):
+def judgementGrabber_guilty(judgeUrl):
   judgementDICT = {"ID": "",
                    "Date": "", 
                    "Charge": "",
@@ -89,7 +89,7 @@ def judgementGrabber_1(judgeUrl):
   else:
     judgementDICT['sentence_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0]  
   return judgementDICT
-def judgementGrabber_2(judgeUrl):
+def judgementGrabber_notguilty(judgeUrl):
   judgementDICT = {"ID": "", 
                    "Date": "", 
                    "Charge": "",
@@ -122,7 +122,6 @@ def judgementGrabber_2(judgeUrl):
 """
 for i in judgementLIST:
   print(i)
-
 for i in judgementLIST:
   if '男女朋友' in i['judgement_1']:
     txt = i['judgement_1'].split("，")
@@ -182,8 +181,6 @@ def data_collector(inputDICT):
     if '男女朋友' in lawsuit['judgement_{}'.format(i)]:
       lawsuitDICT['男女朋友'] = 1
   return lawsuitDICT
-
-
 """**Notes & Problems**
 1. 心理諮商：不一定是告訴人接受心理諮商，也有可能是證人接受心理諮商。
 2. 鑑定書專指DNA鑑定處理
@@ -213,6 +210,8 @@ if __name__ == '__main__':
     lawsuitUrlGrabber_guilty(i)
   for j in notguiltyLIST:
     lawsuitUrlGrabber_notguilty(j)
+  urlLIST_3 = ["https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TNHM,109%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c916%2c20210120%2c3", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,109%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c14%2c20201217%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,109%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c43%2c20200825%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TNDM,108%2c%e4%be%b5%e8%a8%b4%2c72%2c20200806%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,108%2c%e4%be%b5%e8%a8%b4%2c35%2c20200206%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,107%2c%e4%be%b5%e8%a8%b4%2c85%2c20200109%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=MLDM,108%2c%e4%be%b5%e8%a8%b4%2c9%2c20190912%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,108%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c51%2c20190618%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=CTDM,107%2c%e4%be%b5%e8%a8%b4%2c1%2c20181016%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=NTDM,106%2c%e4%be%b5%e8%a8%b4%2c6%2c20180509%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KSHM,106%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c88%2c20171226%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,105%2c%e4%be%b5%e8%a8%b4%2c153%2c20170524%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,103%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c152%2c20150429%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KLDM,103%2c%e4%be%b5%e8%a8%b4%2c36%2c20150331%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,103%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c211%2c20140718%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,102%2c%e8%bb%8d%e4%b8%8a%e8%a8%b4%2c21%2c20131031%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=PCDM,101%2c%e4%be%b5%e8%a8%b4%e7%b7%9d%2c2%2c20130510%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KSDM,101%2c%e4%be%b5%e8%a8%b4%2c70%2c20130501%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=MLDM,101%2c%e4%be%b5%e8%a8%b4%2c16%2c20130131%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KSDM,101%2c%e4%be%b5%e8%a8%b4%2c61%2c20121204%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPDM,101%2c%e4%be%b5%e8%a8%b4%2c2%2c20121105%2c4", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,101%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c178%2c20120726%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=ILDM,100%2c%e4%be%b5%e8%a8%b4%2c14%2c20111005%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=SCDM,99%2c%e8%a8%b4%2c234%2c20110630%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,99%2c%e8%a8%b4%2c3596%2c20110301%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,107%2c%e4%be%b5%e4%b8%8a%e6%9b%b4%e4%b8%80%2c3%2c20200617%2c1"]  #妨害性自主等
+  urlLIST_2 = urlLIST_2 + urlLIST_3
   print(len(urlLIST_1), len(urlLIST_2))
   judgementLIST = []
   urlLIST = urlLIST_1+urlLIST_2
@@ -225,7 +224,7 @@ if __name__ == '__main__':
       print("已爬取50%的網頁")
     if urlIndex == int(urlLen*0.45):
       print("已爬取75%的網頁")
-    judgementDICT = judgementGrabber_1(i)
+    judgementDICT = judgementGrabber_guilty(i)
     judgementLIST.append(judgementDICT)
   for i in urlLIST_2:
     urlIndex = len(urlLIST_1) + urlLIST_2.index(i)
@@ -235,13 +234,9 @@ if __name__ == '__main__':
       print("已爬取75%的網頁")
     if urlIndex == int(urlLen*0.90):
       print("已爬取90%的網頁")
-    judgementDICT = judgementGrabber_2(i)
+    judgementDICT = judgementGrabber_notguilty(i)
     judgementLIST.append(judgementDICT)
   print("爬取完畢")
   with open("judgement.json", "w", encoding = "utf-8") as f:
     json.dump(judgementLIST, f, ensure_ascii = False, indent = 4)
-  lawsuitLIST = []
-  for lawsuit in judgementLIST:
-    lawsuitLIST.append(data_collector(lawsuit))
-  df = pd.DataFrame(lawsuitLIST)
-  df.to_csv("result.csv")
+  

@@ -13,6 +13,7 @@ import json
 import numpy as np
 import pandas as pd
 import requests
+from Law_Classifier import runLoki
 
 def lawsuitUrlGrabber_guilty(url):
   r = requests.get(url.format(1))
@@ -61,63 +62,314 @@ def data_cleaner(string):
 2. 十年以前的判決書會存在text-pre text-pre-in標籤
 """
 def judgementGrabber_guilty(judgeUrl):
+  plaintiffLIST = ['甲女', 'A女', 'Ａ女']
   judgementDICT = {"ID": "",
-                   "Date": "", 
-                   "Charge": "",
-                   "plaintiff": "",
                    "guilty": 1, 
-                   "sentence_1": "", 
-                   "judgement_1": "", 
-                   "sentence_2": "", 
-                   "judgement_2": "", 
+                   "date": "", 
+                   "charge": "", 
+                   "sentence_1": "",
+                   "fact_1": "", 
+                   "reason_1": "", 
+                   "sentence_2": "",
+                   "fact_2": "", 
+                   "reason_2": "", 
                    "url": judgeUrl}
   r = requests.get(judgeUrl)
   lawsuit = bs(r.text, "html.parser")
+  # 判決案號
   judgementDICT['ID'] = data_cleaner(lawsuit.find("title").text)
-  judgementDICT['Date'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[1].text) 
-  judgementDICT['Charge'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[2].text)
-  judgement = lawsuit.find(class_ = "text-pre text-pre-in").text # 尋找在text-pre text-pre-in標籤裡的判決書
-  judgementDICT['judgement_1'] = data_cleaner(judgement).partition("主文")[2].partition("事實") [2]
+  # 日期
+  judgementDICT['date'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[1].text)
+  # 罪名
+  judgementDICT['charge'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[2].text)
+  # 尋找在text-pre text-pre-in標籤裡的判決書
+  judgement = lawsuit.find(class_ = "text-pre text-pre-in").text 
+  # 原告
+  try:
+    plaintiff_1 = [ele for ele in plaintiffLIST if (ele in judgement)]
+    judgementDICT['plaintiff_1'] = plaintiff_1[0]
+  except:
+    judgementDICT['plaintiff_1'] = ""
+  # 主文
+  if '犯罪' == data_cleaner(judgement).partition("：主文")[2].partition("事實") [0][-2:]:
+    sentence = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+    judgementDICT['sentence_1'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:
+      pass
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+    try:
+      # 是否未遂
+      resultDICT['attempted'] = resultDICT['attempted']
+    except:
+      pass
+  else:
+    sentence = data_cleaner(judgement).partition("：主文")[2].partition("事實")[0]
+    judgementDICT['sentence_1'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:
+      pass
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+    try:
+      # 是否未遂
+      judgementDICT['attempted'] = resultDICT['attempted']
+    except:
+      pass
+    # 尋找在text-pre text-pre-in標籤裡的判決書
+  # 事實
+  judgementDICT['fact_1'] = data_cleaner(judgement).partition("事實")[2].partition("理由")[0]
+  # 理由
+  judgementDICT['reason_1'] = data_cleaner(judgement).partition("理由")[2].partition("論罪科刑：")[0]
+  judgementDICT['crime&sentence_1'] = data_cleaner(judgement).partition("三、論罪科刑")[2].partition("中華民國")[0]
+  # 尋找在htmlcontent標籤裡的判決書 以上編號為1 以下編號為2
+  judgement = lawsuit.find(class_ = "htmlcontent").text 
+  try:
+    plaintiff_2 = [ele for ele in plaintiffLIST if (ele in judgement)]
+    judgementDICT['plaintiff_2'] = plaintiff_2[0]
+  except:
+    judgementDICT['plaintiff_2'] = ""
+  # 主文
   if '犯罪' == data_cleaner(judgement).partition("主文")[2].partition("事實") [0][-2:]:
-    judgementDICT['sentence_1'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+    sentence = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+    judgementDICT['sentence_2'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:passjudgementDICT['addition'] = ''
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+  # 尋找在text-pre text-pre-in標籤裡的判決書
   else:
-    judgementDICT['sentence_1'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0]  
-  judgement = lawsuit.find(class_ = "htmlcontent").text # 尋找在htmlcontent標籤裡的判決書
-  judgementDICT['judgement_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實") [2]
-  if '犯罪' == data_cleaner(judgement).partition("主文")[2].partition("事實") [0][-2:]: #將犯罪二字去除
-    judgementDICT['sentence_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
-  else:
-    judgementDICT['sentence_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0]  
+    sentence = data_cleaner(judgement).partition("主文")[2].partition("事實")[0]
+    judgementDICT['sentence_2'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:
+      pass
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+  # 事實
+  judgementDICT['fact_2'] = data_cleaner(judgement).partition("事實")[2].partition("理由")[0]
+  # 理由 
+  judgementDICT['reason_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實") [2]
+  judgementDICT['crime&sentence_2'] = data_cleaner(judgement).partition("三、論罪科刑")[2].partition("中華民國")[0]
   return judgementDICT
 def judgementGrabber_notguilty(judgeUrl):
-  judgementDICT = {"ID": "", 
-                   "Date": "", 
-                   "Charge": "",
-                   "plaintiff": "",
-                   "defendent": "",
+  plaintiffLIST = ['甲女', 'A女', 'Ａ女']
+  judgementDICT = {"ID": "",
                    "guilty": 0, 
-                   "sentence_1": "", 
-                   "judgement_1": "", 
-                   "sentence_2": "", 
-                   "judgement_2": "", 
+                   "date": "", 
+                   "charge": "", 
+                   "sentence_1": "",
+                   "fact_1": "", 
+                   "reason_1": "", 
+                   "sentence_2": "",
+                   "fact_2": "", 
+                   "reason_2": "", 
                    "url": judgeUrl}
   r = requests.get(judgeUrl)
   lawsuit = bs(r.text, "html.parser")
+  # 判決案號
   judgementDICT['ID'] = data_cleaner(lawsuit.find("title").text)
-  judgementDICT['Date'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[1].text) 
-  judgementDICT['Charge'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[2].text)
-  judgement = lawsuit.find(class_ = "text-pre text-pre-in").text
-  judgementDICT['judgement_1'] = data_cleaner(judgement).partition("主文")[2].partition("事實") [2]
-  if '犯罪' == data_cleaner(judgement).partition("主文")[2].partition("事實") [0][-2:]:
-    judgementDICT['sentence_1'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+  # 日期
+  judgementDICT['date'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[1].text)
+  # 罪名
+  judgementDICT['charge'] = data_cleaner(lawsuit.find_all(class_ = 'col-td')[2].text)
+  # 尋找在text-pre text-pre-in標籤裡的判決書
+  judgement = lawsuit.find(class_ = "text-pre text-pre-in").text 
+  # 原告
+  try:
+    plaintiff_1 = [ele for ele in plaintiffLIST if (ele in judgement)]
+    judgementDICT['plaintiff_1'] = plaintiff_1[0]
+  except:
+    judgementDICT['plaintiff_1'] = ""
+  # 主文
+  if '犯罪' == data_cleaner(judgement).partition("：主文")[2].partition("事實") [0][-2:]:
+    sentence = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+    judgementDICT['sentence_1'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:
+      pass
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+    try:
+      # 是否未遂
+      resultDICT['attempted'] = resultDICT['attempted']
+    except:
+      pass
   else:
-    judgementDICT['sentence_1'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0]  
-  judgement = lawsuit.find(class_ = "htmlcontent").text
-  judgementDICT['judgement_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實") [2]
+    sentence = data_cleaner(judgement).partition("：主文")[2].partition("事實")[0]
+    judgementDICT['sentence_1'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:
+      pass
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+    try:
+      # 是否未遂
+      judgementDICT['attempted'] = resultDICT['attempted']
+    except:
+      pass
+    # 尋找在text-pre text-pre-in標籤裡的判決書
+  # 事實
+  judgementDICT['fact_1'] = data_cleaner(judgement).partition("事實")[2].partition("理由")[0]
+  # 理由
+  judgementDICT['reason_1'] = data_cleaner(judgement).partition("理由")[2].partition("論罪科刑：")[0]
+  judgementDICT['crime&sentence_1'] = data_cleaner(judgement).partition("三、論罪科刑")[2].partition("中華民國")[0]
+  # 尋找在htmlcontent標籤裡的判決書 以上編號為1 以下編號為2
+  judgement = lawsuit.find(class_ = "htmlcontent").text 
+  try:
+    plaintiff_2 = [ele for ele in plaintiffLIST if (ele in judgement)]
+    judgementDICT['plaintiff_2'] = plaintiff_2[0]
+  except:
+    judgementDICT['plaintiff_2'] = ""
+  # 主文
   if '犯罪' == data_cleaner(judgement).partition("主文")[2].partition("事實") [0][-2:]:
-    judgementDICT['sentence_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+    sentence = data_cleaner(judgement).partition("主文")[2].partition("事實")[0][:-3]
+    judgementDICT['sentence_2'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:passjudgementDICT['addition'] = ''
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+  # 尋找在text-pre text-pre-in標籤裡的判決書
   else:
-    judgementDICT['sentence_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實")[0] 
+    sentence = data_cleaner(judgement).partition("主文")[2].partition("事實")[0]
+    judgementDICT['sentence_2'] = sentence
+    resultDICT = runLoki([sentence], ['isCriminal'])
+    try:
+      # 被告
+      judgementDICT['defendent'] = resultDICT['criminal']
+    except:
+      pass
+    # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
+    try:
+      judgementDICT['victim_feature'] = resultDICT['victim']
+    except:
+      pass
+    # 特殊條件：攜帶兇器/侵入住宅/對被害人施以凌虐
+    try:
+      judgementDICT['addition'] = resultDICT['addition']
+    except:
+      pass
+    # 未成年
+    try:
+      judgementDICT['under_18'] = resultDICT['under_18']
+    except:
+      pass
+  # 事實
+  judgementDICT['fact_2'] = data_cleaner(judgement).partition("事實")[2].partition("理由")[0]
+  # 理由 
+  judgementDICT['reason_2'] = data_cleaner(judgement).partition("主文")[2].partition("事實") [2]
+  judgementDICT['crime&sentence_2'] = data_cleaner(judgement).partition("三、論罪科刑")[2].partition("中華民國")[0]
   return judgementDICT
 """
 for i in judgementLIST:
@@ -148,50 +400,7 @@ for i in judgementLIST:
             print("有男女朋友的句子的下下一句", nn)
         print("----------------------")
 """
-def data_collector(inputDICT):
-  lawsuitDICT = {'ID': "",'Date': '','Guilty': 0, '心理諮商': 0, '鑑定書': 0, '測謊鑑定': 0, '驗傷診斷書': 0, '通話紀錄': 0, '對話紀錄': 0, '坦承': 0, '指述': 0, '繪圖': 0, '輔導紀錄': 0, '同事關係': 0, '同居關係': 0, '按摩': 0, '男女朋友': 0}
-  lawsuitDICT['ID'] = inputDICT['ID']
-  lawsuitDICT['Guilty'] = inputDICT['guilty']
-  lawsuitDICT['Date'] = inputDICT['Date']
-  for i in range(1, 3):
-    if '心理諮商' in inputDICT['judgement_{}'.format(i)]:
-      lawsuitDICT['心理諮商'] = 1
-    if '鑑定書' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['鑑定書'] = 1
-    if '測謊鑑定' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['測謊鑑定'] = 1
-    if '驗傷診斷書' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['驗傷診斷書'] = 1
-    if '通話紀錄' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['通話紀錄'] = 1
-    if '對話紀錄' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['對話紀錄'] = 1
-    if '坦承' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['坦承'] = 1
-    if '指述' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['指述'] = 1
-    if '繪圖' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['繪圖'] = 1
-    if '輔導紀錄' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['輔導紀錄'] = 1
-    if '同事關係' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['同事關係'] = 1
-    if '按摩' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['按摩'] = 1
-    if '男女朋友' in lawsuit['judgement_{}'.format(i)]:
-      lawsuitDICT['男女朋友'] = 1
-  return lawsuitDICT
-"""**Notes & Problems**
-1. 心理諮商：不一定是告訴人接受心理諮商，也有可能是證人接受心理諮商。
-2. 鑑定書專指DNA鑑定處理
-3. 告訴人與被告人皆會接受測謊鑑定
-4. 驗傷診斷書：純粹判斷證據有無，無疑慮
-5. 坦承：被告認罪。指述：告訴人指認描述（需要算詞頻嗎？）
-6. 繪圖：純粹判斷證據有無，無疑慮
-7. 輔導紀錄：是否有可能被告也有輔導紀錄？Ａ：排除論罪科刑後（不是影響有沒有罪，只會影響刑期）
-8. 仍須判斷同事關係、同居關係、按摩，與男女朋友是否為被告與告訴人之間
 
-"""
 if __name__ == '__main__':
   url_1 = "https://law.judicial.gov.tw/FJUD/qryresultlst.aspx?q=bbde96d11f26de49e018a79c898151c6&sort=DS&page={}&ot=in" #1 guilty 100/01/01~105/12/31
   url_2 = "https://law.judicial.gov.tw/FJUD/qryresultlst.aspx?q=7b807db4e6d042f04f917a6f070028fb&sort=DS&page={}&ot=in" #1 guilty 106/01/01~110/5/13
@@ -206,37 +415,32 @@ if __name__ == '__main__':
   notguiltyLIST = ["https://law.judicial.gov.tw/FJUD/qryresultlst.aspx?ty=JUDBOOK&q=799cc1a3bbcdaad69acb2af5104d8518", "https://law.judicial.gov.tw/FJUD/qryresultlst.aspx?q=59479c327bc46bebb3dc194975d41f31&sort=DS&page={}&ot=in", "https://law.judicial.gov.tw/FJUD/qryresultlst.aspx?ty=JUDBOOK&q=6e595212546038044de5beb70c1e90ed"]
   urlLIST_1 = [] #guilty
   urlLIST_2 = [] #not guilty
+  print("-------爬取連結開始-------")
   for i in guiltyLIST:
     lawsuitUrlGrabber_guilty(i)
   for j in notguiltyLIST:
     lawsuitUrlGrabber_notguilty(j)
+  print("-------爬取連結完畢-------")
   urlLIST_3 = ["https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TNHM,109%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c916%2c20210120%2c3", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,109%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c14%2c20201217%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,109%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c43%2c20200825%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TNDM,108%2c%e4%be%b5%e8%a8%b4%2c72%2c20200806%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,108%2c%e4%be%b5%e8%a8%b4%2c35%2c20200206%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,107%2c%e4%be%b5%e8%a8%b4%2c85%2c20200109%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=MLDM,108%2c%e4%be%b5%e8%a8%b4%2c9%2c20190912%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,108%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c51%2c20190618%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=CTDM,107%2c%e4%be%b5%e8%a8%b4%2c1%2c20181016%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=NTDM,106%2c%e4%be%b5%e8%a8%b4%2c6%2c20180509%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KSHM,106%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c88%2c20171226%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,105%2c%e4%be%b5%e8%a8%b4%2c153%2c20170524%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCHM,103%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c152%2c20150429%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KLDM,103%2c%e4%be%b5%e8%a8%b4%2c36%2c20150331%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,103%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c211%2c20140718%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,102%2c%e8%bb%8d%e4%b8%8a%e8%a8%b4%2c21%2c20131031%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=PCDM,101%2c%e4%be%b5%e8%a8%b4%e7%b7%9d%2c2%2c20130510%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KSDM,101%2c%e4%be%b5%e8%a8%b4%2c70%2c20130501%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=MLDM,101%2c%e4%be%b5%e8%a8%b4%2c16%2c20130131%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=KSDM,101%2c%e4%be%b5%e8%a8%b4%2c61%2c20121204%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPDM,101%2c%e4%be%b5%e8%a8%b4%2c2%2c20121105%2c4", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,101%2c%e4%be%b5%e4%b8%8a%e8%a8%b4%2c178%2c20120726%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=ILDM,100%2c%e4%be%b5%e8%a8%b4%2c14%2c20111005%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=SCDM,99%2c%e8%a8%b4%2c234%2c20110630%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TCDM,99%2c%e8%a8%b4%2c3596%2c20110301%2c1", "https://law.judicial.gov.tw/FJUD/data.aspx?ty=JD&id=TPHM,107%2c%e4%be%b5%e4%b8%8a%e6%9b%b4%e4%b8%80%2c3%2c20200617%2c1"]  #妨害性自主等
   urlLIST_2 = urlLIST_2 + urlLIST_3
   print(len(urlLIST_1), len(urlLIST_2))
+  print("-------開始爬取連結內容-------")
   judgementLIST = []
   urlLIST = urlLIST_1+urlLIST_2
   urlLen = len(urlLIST)
   for i in urlLIST_1:
     urlIndex = urlLIST.index(i)
-    if urlIndex == int(urlLen*0.15):
+    if urlIndex == int(urlLen*0.25):
       print("已爬取25%的網頁")
-    if urlIndex == int(urlLen*0.30):
+    if urlIndex == int(urlLen*0.50):
       print("已爬取50%的網頁")
-    if urlIndex == int(urlLen*0.45):
+    if urlIndex == int(urlLen*0.75):
       print("已爬取75%的網頁")
     judgementDICT = judgementGrabber_guilty(i)
     judgementLIST.append(judgementDICT)
   for i in urlLIST_2:
-    urlIndex = len(urlLIST_1) + urlLIST_2.index(i)
-    if urlIndex == int(urlLen*0.60):
-      print("已爬取60%的網頁")
-    if urlIndex == int(urlLen*0.75):
-      print("已爬取75%的網頁")
-    if urlIndex == int(urlLen*0.90):
-      print("已爬取90%的網頁")
     judgementDICT = judgementGrabber_notguilty(i)
     judgementLIST.append(judgementDICT)
-  print("爬取完畢")
+  print("-------完成爬取連結內容-------")
   with open("judgement.json", "w", encoding = "utf-8") as f:
-    json.dump(judgementLIST, f, ensure_ascii = False, indent = 4)
-  
+    json.dump(judgementLIST, f, ensure_ascii = False, indent = 4)  

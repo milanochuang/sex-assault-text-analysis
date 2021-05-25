@@ -60,7 +60,7 @@ except:
 
 
 LOKI_URL = "https://api.droidtown.co/Loki/BulkAPI/"
-USERNAME = ""
+USERNAME = "milanochuang@gmail.com"
 LOKI_KEY = ""
 # 意圖過濾器說明
 # INTENT_FILTER = []        => 比對全部的意圖 (預設)
@@ -207,38 +207,38 @@ def testLoki(inputLIST, filterLIST):
 
 
 if __name__ == "__main__":
-    # relationship_check
-    print("[TEST] relationship_check")
-    inputLIST = ['與A女','甲男與被告','甲男與乙證人','羅文彬與被告','羅文彬與乙證人','羅文彬於民國99年間透過網路交友網站結識代號00000000000號之成年女子']
-    testLoki(inputLIST, ['relationship_check'])
-    print("")
+    # # relationship_check
+    # print("[TEST] relationship_check")
+    # inputLIST = ['與A女','甲男與被告','甲男與乙證人','羅文彬與被告','羅文彬與乙證人','羅文彬於民國99年間透過網路交友網站結識代號00000000000號之成年女子']
+    # testLoki(inputLIST, ['relationship_check'])
+    # print("")
 
-    # isDating
-    print("[TEST] isDating")
-    inputLIST = ['以男女朋友','係男女朋友','為男女朋友','並非男女朋友']
-    testLoki(inputLIST, ['isDating'])
-    print("")
+    # # isDating
+    # print("[TEST] isDating")
+    # inputLIST = ['以男女朋友','係男女朋友','為男女朋友','並非男女朋友']
+    # testLoki(inputLIST, ['isDating'])
+    # print("")
 
-    # isCoworker
-    print("[TEST] isCoworker")
-    inputLIST = ['同事之關係','僅為同事關係','原為同事關係','僅為普通之工作同事關係']
-    testLoki(inputLIST, ['isCoworker'])
-    print("")
+    # # isCoworker
+    # print("[TEST] isCoworker")
+    # inputLIST = ['同事之關係','僅為同事關係','原為同事關係','僅為普通之工作同事關係']
+    # testLoki(inputLIST, ['isCoworker'])
+    # print("")
 
-    # isMassage
-    print("[TEST] isMassage")
-    inputLIST = ['按摩後','預約按摩','幫甲女按摩','跨坐背上按摩']
-    testLoki(inputLIST, ['isMassage'])
-    print("")
+    # # isMassage
+    # print("[TEST] isMassage")
+    # inputLIST = ['按摩後','預約按摩','幫甲女按摩','跨坐背上按摩']
+    # testLoki(inputLIST, ['isMassage'])
+    # print("")
 
-    # isCriminal
-    print("[TEST] isCriminal")
-    inputLIST = ['楊智皓犯強制性交罪','甲○○犯強制性交罪','楊智皓犯攜帶兇器強制性交罪','甲○○犯攜帶兇器強制性交罪','楊智皓對精神障礙之女子犯強制性交罪','楊智皓成年人故意對少年犯強制性交罪','甲○○對精神障礙之女子犯強制性交罪','甲○○成年人故意對少年犯強制性交罪','楊智皓攜帶兇器對精神障礙人犯強制性交罪','甲○○攜帶兇器對精神障礙人犯強制性交罪','楊智皓對精神障礙之人犯攜帶兇器強制性交罪','甲○○對精神障礙之人犯攜帶兇器強制性交罪','楊智皓對身體障礙及心智缺陷之人犯強制性交罪','甲○○對身體障礙及心智缺陷之人犯強制性交罪']
-    testLoki(inputLIST, ['isCriminal'])
-    print("")
+    # # isCriminal
+    # print("[TEST] isCriminal")
+    # inputLIST = ['楊智皓犯強制性交罪','甲○○犯強制性交罪','楊智皓犯攜帶兇器強制性交罪','甲○○犯攜帶兇器強制性交罪','楊智皓對精神障礙之女子犯強制性交罪','楊智皓成年人故意對少年犯強制性交罪','甲○○對精神障礙之女子犯強制性交罪','甲○○成年人故意對少年犯強制性交罪','楊智皓攜帶兇器對精神障礙人犯強制性交罪','甲○○攜帶兇器對精神障礙人犯強制性交罪','楊智皓對精神障礙之人犯攜帶兇器強制性交罪','甲○○對精神障礙之人犯攜帶兇器強制性交罪','楊智皓對身體障礙及心智缺陷之人犯強制性交罪','甲○○對身體障礙及心智缺陷之人犯強制性交罪']
+    # testLoki(inputLIST, ['isCriminal'])
+    # print("")
 
     # 輸入其它句子試看看
-    #inputLIST = ["輸入你的內容1", "輸入你的內容2"]
-    #filterLIST = []
-    #resultDICT = runLoki(inputLIST, filterLIST)
-    #print("Result => {}".format(resultDICT))
+    inputLIST = ["戊○○成年人故意對少年犯強制性交罪，處有期徒刑參年拾月。"]
+    filterLIST = []
+    resultDICT = runLoki(inputLIST, filterLIST)
+    print("Result => {}".format(resultDICT))

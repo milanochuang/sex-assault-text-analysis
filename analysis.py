@@ -16,7 +16,6 @@ def arrange_data(judgement):
   plaintiffLIST = ['甲女', 'A女', 'Ａ女', '甲○']
   with open (judgement, "r") as f:
     data = json.load(f)
-  
   dataLen = len(data)
   originalName = []
   for i in data:
@@ -37,7 +36,14 @@ def arrange_data(judgement):
           resultDICT_1 = runLoki([sentence], ['isCriminal'])
         else:
           print("RunLoki(originalSentence_{})".format(data.index(i)+1))
-          resultDICT_2 = runLoki([originalSentence], ['isCriminal'])
+          if "。" in originalSentence:
+            originalSentence = originalSentence.split("。")
+            for k in originalSentence:
+              if "，" in k and "強制性交" in k:
+                originalSentence_split = k.split("，")
+          elif "，" in originalSentence:
+            originalSentence_split = originalSentence.split("，")[0]
+          resultDICT_2 = runLoki([originalSentence_split], ['isCriminal'])
         try:
           i['plaintiff_{}'.format(j)] =[plaintiff for plaintiff in plaintiffLIST if plaintiff in originalJudgement][0]
         except:
@@ -102,7 +108,7 @@ def arrange_data(judgement):
 def change_name(inputSTR):
   pronounLIST = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "丑", "寅", "卯", "辰", "巳", "午", "申", "酉", "戌", "亥"]
   genderLIST = ["男", "女"]
-  aliasLIST = ["○○", "◯◯", "○○○", "◯◯◯"]
+  aliasLIST = ["○○○", "◯◯◯", "○○", "◯◯"]
   pronoun = None
   alias = None
   gender = None
@@ -171,7 +177,7 @@ if __name__ == '__main__':
   judgement = arrange_data("judgement.json")
   # with open("judgement_arrange.json", "w", encoding = "utf-8") as f:
   #   json.dump(judgement, f, ensure_ascii = False, indent = 4)
-  # print(runLoki(["邱清鑫、陳佳新二人以上共同攜帶兇器犯強制性交而凌虐罪"]))
+  # print(runLoki(["陳子安犯侵入住宅強制性交未遂罪"]))
   # with open ('judgement.json') as jsonfile:
   #   judgementLIST = json.load(jsonfile)
   # lawsuitLIST = []

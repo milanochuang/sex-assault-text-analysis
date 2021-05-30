@@ -15,7 +15,7 @@
 """
 
 DEBUG_isCriminal = True
-userDefinedDICT = {"人": ["女子", "少年", "少女"], "罪": ["未遂罪"], "少年": ["少女"], "王小明": ["甲男", "乙男", "丙男", "丁男", "戊男", "己男", "庚男", "辛男", "壬男", "癸男", "甲○○", "乙○○", "丙○○", "丁○○", "戊○○", "己○○", "庚○○", "辛○○", "壬○○", "癸○○", "陳○○", "林○○", "王○○", "李○○", "張○○", "黃○○", "吳○○", "劉○○", "蔡○○", "楊○○", "許○○", "鄭○○", "謝○○", "郭○○", "洪○○", "邱○○", "曾○○", "賴○○", "廖○○", "徐○○", "周○○", "葉○○", "蘇○○", "莊○○", "呂○○"], "攜帶兇器": ["侵入住宅", "以藥劑", "對被害人施以凌虐"], "精神障礙": ["心智缺陷", "身體障礙", "未滿十四歲", "未滿十八歲", "未滿14歲", "未滿18歲"]}
+userDefinedDICT = {"人": ["女子", "少年", "少女"], "罪": ["未遂罪"], "少年": ["少女"], "王小明": ["甲男", "乙男", "丙男", "丁男", "戊男", "己男", "庚男", "辛男", "壬男", "癸男", "甲○○", "乙○○", "丙○○", "丁○○", "戊○○", "己○○", "庚○○", "辛○○", "壬○○", "癸○○", "陳○○", "林○○", "王○○", "李○○", "張○○", "黃○○", "吳○○", "劉○○", "蔡○○", "楊○○", "許○○", "鄭○○", "謝○○", "郭○○", "洪○○", "邱○○", "曾○○", "賴○○", "廖○○", "徐○○", "周○○", "葉○○", "蘇○○", "莊○○", "呂○○"], "攜帶兇器": ["侵入住宅", "以藥劑", "對被害人施以凌虐", "共同"], "精神障礙": ["心智缺陷", "身體障礙", "未滿十四歲", "未滿十八歲", "未滿14歲", "未滿18歲"]}
 
 # 將符合句型的參數列表印出。這是 debug 或是開發用的。
 def debugInfo(inputSTR, utterance):
@@ -44,7 +44,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
     resultDICT['plaintiff_feature'] = []
     if utterance == "[王小明][攜帶兇器]對[精神障礙]之[人]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[1])
         resultDICT['plaintiff_feature'].append(args[2])
@@ -55,7 +54,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明][攜帶兇器]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[1])
         resultDICT['plaintiff_feature'] = None
@@ -66,7 +64,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]對[精神障礙]之[人]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
         resultDICT['plaintiff_feature'].append(args[1])
@@ -77,7 +74,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]對[精神障礙]之[人]犯[攜帶兇器][強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[3])
         resultDICT['plaintiff_feature'].append(args[1])
@@ -88,7 +84,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]對[身體障礙]及[心智缺陷]之[人]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
         resultDICT['plaintiff_feature'].append(args[1])
@@ -100,7 +95,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]成年人[故意]對[少年]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
         resultDICT['plaintiff_feature'].append(args[2])
@@ -111,7 +105,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]成年人[故意]對[少年]犯[攜帶兇器][強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[3])
         resultDICT['plaintiff_feature'].append(args[2])
@@ -122,7 +115,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]成年人[故意]對[未滿十八歲]之[少年]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
         resultDICT['plaintiff_feature'].append(args[2])
@@ -133,7 +125,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]成年人對[未滿十八歲]之[人]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
         resultDICT['plaintiff_feature'].append(args[1])
@@ -144,7 +135,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]犯[強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
         resultDICT['plaintiff_feature'] = None
@@ -155,7 +145,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
 
     if utterance == "[王小明]犯[攜帶兇器][強制]性交[罪]":
         # write your code here
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[1])
         resultDICT['plaintiff_feature'] = None
@@ -165,7 +154,6 @@ def getResult(inputSTR, utterance, args, resultDICT):
         pass
 
     if utterance == "[王小明]對[精神障礙]之[人][攜帶兇器]犯[強制]性交[罪]":
-        print(args[0])
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[3])
         resultDICT['plaintiff_feature'].append(args[1])
@@ -175,23 +163,38 @@ def getResult(inputSTR, utterance, args, resultDICT):
         pass
 
     if utterance == "[王小明]犯二人以上[共同][強制]性交[罪]":
-        print(args[0])
         resultDICT['defendent'] = args[0]
-        resultDICT['defendent_feature'] = "二人共同犯罪"
+        resultDICT['defendent_feature'] = ["二人共同犯罪"]
         resultDICT['plaintiff_feature'] = None
         resultDICT['under_18'] = None
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
         pass
+
     if utterance == "[王小明]、[王小明]二人以上[共同][攜帶兇器]犯[強制]性交而凌虐[罪]":
         resultDICT['defendent'] = []
-        print(args[0])
         resultDICT['defendent'].append(args[0])
         resultDICT['defendent'].append(args[1])
-        resultDICT['defendent_feature'] = "二人共同犯罪"
+        resultDICT['defendent_feature'] = ["二人共同犯罪"]
         resultDICT['plaintiff_feature'] = args[3]
         resultDICT['under_18'] = None
         resultDICT['isWoman'] = None
+        resultDICT['attempt'] = check_attempted(args)
+        pass
+    
+    if utterance == "[王小明]犯[共同][強制]性交[罪]":
+        resultDICT['defendent'] = args[0]
+        resultDICT['defendent_feature'] = ["二人共同犯罪"]
+        resultDICT['plaintiff_feature'] = None
+        resultDICT['under_18'] = None
+        resultDICT['isWoman'] = None
+        resultDICT['attempt'] = check_attempted(args)
+    if utterance == "[王小明]成年人對[少年]犯[強制]性交[罪]":
+        resultDICT['defendent'] = args[0]
+        resultDICT['defendent_feature'] = None
+        resultDICT['plaintiff_feature'] = None
+        resultDICT['under_18'] = 1
+        resultDICT['isWoman'] = check_plaintiff_feature(args[1])
         resultDICT['attempt'] = check_attempted(args)
         pass
     return resultDICT

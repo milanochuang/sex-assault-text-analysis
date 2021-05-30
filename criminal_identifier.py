@@ -46,22 +46,14 @@ from requests import post
 from requests import codes
 import math
 try:
-    from intent import Loki_relationship_check
-    from intent import Loki_isDating
-    from intent import Loki_isCoworker
-    from intent import Loki_isMassage
     from intent import Loki_isCriminal
 except:
-    from .intent import Loki_relationship_check
-    from .intent import Loki_isDating
-    from .intent import Loki_isCoworker
-    from .intent import Loki_isMassage
     from .intent import Loki_isCriminal
 
 
 LOKI_URL = "https://api.droidtown.co/Loki/BulkAPI/"
 USERNAME = "milanochuang@gmail.com"
-LOKI_KEY = ""
+LOKI_KEY = "OKWq*yYR%1e6&F#fuvjGZyusWXqaHlY"
 # 意圖過濾器說明
 # INTENT_FILTER = []        => 比對全部的意圖 (預設)
 # INTENT_FILTER = [intentN] => 僅比對 INTENT_FILTER 內的意圖
@@ -176,22 +168,6 @@ def runLoki(inputLIST, filterLIST=[]):
     if lokiRst.getStatus():
         for index, key in enumerate(inputLIST):
             for resultIndex in range(0, lokiRst.getLokiLen(index)):
-                # relationship_check
-                if lokiRst.getIntent(index, resultIndex) == "relationship_check":
-                    resultDICT = Loki_relationship_check.getResult(key, lokiRst.getUtterance(index, resultIndex), lokiRst.getArgs(index, resultIndex), resultDICT)
-
-                # isDating
-                if lokiRst.getIntent(index, resultIndex) == "isDating":
-                    resultDICT = Loki_isDating.getResult(key, lokiRst.getUtterance(index, resultIndex), lokiRst.getArgs(index, resultIndex), resultDICT)
-
-                # isCoworker
-                if lokiRst.getIntent(index, resultIndex) == "isCoworker":
-                    resultDICT = Loki_isCoworker.getResult(key, lokiRst.getUtterance(index, resultIndex), lokiRst.getArgs(index, resultIndex), resultDICT)
-
-                # isMassage
-                if lokiRst.getIntent(index, resultIndex) == "isMassage":
-                    resultDICT = Loki_isMassage.getResult(key, lokiRst.getUtterance(index, resultIndex), lokiRst.getArgs(index, resultIndex), resultDICT)
-
                 # isCriminal
                 if lokiRst.getIntent(index, resultIndex) == "isCriminal":
                     resultDICT = Loki_isCriminal.getResult(key, lokiRst.getUtterance(index, resultIndex), lokiRst.getArgs(index, resultIndex), resultDICT)
@@ -207,38 +183,14 @@ def testLoki(inputLIST, filterLIST):
 
 
 if __name__ == "__main__":
-    # # relationship_check
-    # print("[TEST] relationship_check")
-    # inputLIST = ['與A女','甲男與被告','甲男與乙證人','羅文彬與被告','羅文彬與乙證人','羅文彬於民國99年間透過網路交友網站結識代號00000000000號之成年女子']
-    # testLoki(inputLIST, ['relationship_check'])
-    # print("")
-
-    # # isDating
-    # print("[TEST] isDating")
-    # inputLIST = ['以男女朋友','係男女朋友','為男女朋友','並非男女朋友']
-    # testLoki(inputLIST, ['isDating'])
-    # print("")
-
-    # # isCoworker
-    # print("[TEST] isCoworker")
-    # inputLIST = ['同事之關係','僅為同事關係','原為同事關係','僅為普通之工作同事關係']
-    # testLoki(inputLIST, ['isCoworker'])
-    # print("")
-
-    # # isMassage
-    # print("[TEST] isMassage")
-    # inputLIST = ['按摩後','預約按摩','幫甲女按摩','跨坐背上按摩']
-    # testLoki(inputLIST, ['isMassage'])
-    # print("")
-
-    # # isCriminal
+    # isCriminal
     # print("[TEST] isCriminal")
-    # inputLIST = ['楊智皓犯強制性交罪','甲○○犯強制性交罪','楊智皓犯攜帶兇器強制性交罪','甲○○犯攜帶兇器強制性交罪','楊智皓對精神障礙之女子犯強制性交罪','楊智皓成年人故意對少年犯強制性交罪','甲○○對精神障礙之女子犯強制性交罪','甲○○成年人故意對少年犯強制性交罪','楊智皓攜帶兇器對精神障礙人犯強制性交罪','甲○○攜帶兇器對精神障礙人犯強制性交罪','楊智皓對精神障礙之人犯攜帶兇器強制性交罪','甲○○對精神障礙之人犯攜帶兇器強制性交罪','楊智皓對身體障礙及心智缺陷之人犯強制性交罪','甲○○對身體障礙及心智缺陷之人犯強制性交罪']
+    # inputLIST = ['王小明犯強制性交罪','王小明攜帶兇器犯強制性交罪','王小明犯攜帶兇器強制性交罪','王小明對精神障礙之人犯強制性交罪','王小明成年人故意對少年犯強制性交罪','王小明對精神障礙之人犯攜帶兇器強制性交罪','王小明成年人對未滿十八歲之人犯強制性交罪','王小明攜帶兇器對精神障礙之人犯強制性交罪','王小明對身體障礙及心智缺陷之人犯強制性交罪','王小明成年人故意對少年犯攜帶兇器強制性交罪','王小明成年人故意對未滿十八歲之少年犯強制性交罪']
     # testLoki(inputLIST, ['isCriminal'])
     # print("")
 
     # 輸入其它句子試看看
-    inputLIST = ["戊○○成年人故意對少年犯強制性交罪，處有期徒刑參年拾月。"]
+    inputLIST = ["邱清鑫、陳佳新二人以上共同攜帶兇器犯強制性交而凌虐罪"]
     filterLIST = []
     resultDICT = runLoki(inputLIST, filterLIST)
     print("Result => {}".format(resultDICT))

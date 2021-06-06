@@ -182,26 +182,6 @@ def testLoki(inputLIST, filterLIST):
     for i in range(0, math.ceil(len(inputLIST) / INPUT_LIMIT)):
         resultDICT = runLoki(inputLIST[i*INPUT_LIMIT:(i+1)*INPUT_LIMIT], filterLIST)
 
-def change_name(inputSTR):
-  pronounLIST = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸", "丑", "寅", "卯", "辰", "巳", "午", "申", "酉", "戌", "亥"]
-  genderLIST = ["男", "女"]
-  aliasLIST = ["○○○", "◯◯◯", "○○", "◯◯"]
-  pronoun = None
-  alias = None
-  gender = None
-  status = 0
-  if bool([pronoun for pronoun in pronounLIST if pronoun in inputSTR]):
-    pronoun = [pronoun for pronoun in pronounLIST if pronoun in inputSTR]
-    status = 1
-    for i in pronoun:
-      inputSTR = inputSTR.replace(i, "王", 1)
-  if bool([gender for gender in genderLIST if gender in inputSTR]):
-    gender = [gender for gender in genderLIST if gender in inputSTR][0]
-    inputSTR = inputSTR.replace(gender, "小明", 1)
-  if bool([alias for alias in aliasLIST if alias in inputSTR]):
-    alias = [alias for alias in aliasLIST if alias in inputSTR][0]
-    inputSTR = inputSTR.replace(alias, "小明")
-  return inputSTR, status, pronoun, alias, gender
 
 if __name__ == "__main__":
     # isCriminal
@@ -211,7 +191,7 @@ if __name__ == "__main__":
     # print("")
 
     # 輸入其它句子試看看
-    inputSTR = change_name("蘇○○成年人對少年犯乘機猥褻罪，處有期徒刑柒月。曾○○成年人對少年犯強制性交罪，處有期徒刑參年貳月")
+    inputSTR = "王小明成年人故意對未滿十八歲之少年犯強制性交罪"
     inputLIST = [inputSTR]
     # print(change_name("蘇○○成年人對少年犯乘機猥褻罪，處有期徒刑柒月。曾○○成年人對少年犯強制性交罪，處有期徒刑參年貳月"))
     filterLIST = []

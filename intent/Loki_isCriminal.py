@@ -28,7 +28,7 @@ def check_attempted(args):
     else:
         return 0
 
-def check_plaintiff_feature(*args):
+def check_victim_feature(*args):
   status = 0
   for i in args:
     for j in i:
@@ -41,14 +41,14 @@ def check_plaintiff_feature(*args):
 def getResult(inputSTR, utterance, args, resultDICT):
     debugInfo(inputSTR, utterance)
     resultDICT['defendent_feature'] = []
-    resultDICT['plaintiff_feature'] = []
+    resultDICT['victim_feature'] = []
     if utterance == "[王小明][攜帶兇器]對[精神障礙]之[人]犯[強制]性交[罪]":
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[1])
-        resultDICT['plaintiff_feature'].append(args[2])
-        resultDICT['under_18'] = check_plaintiff_feature([args[2]])
-        resultDICT['isWoman'] = check_plaintiff_feature([arg[3]])
+        resultDICT['victim_feature'].append(args[2])
+        resultDICT['under_18'] = check_victim_feature([args[2]])
+        resultDICT['isWoman'] = check_victim_feature([arg[3]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -56,7 +56,7 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[1])
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
@@ -66,9 +66,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'].append(args[1])
-        resultDICT['under_18'] = check_plaintiff_feature([args[1]])
-        resultDICT['isWoman'] = check_plaintiff_feature([args[2]])
+        resultDICT['victim_feature'].append(args[1])
+        resultDICT['under_18'] = check_victim_feature([args[1]])
+        resultDICT['isWoman'] = check_victim_feature([args[2]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -76,9 +76,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[3])
-        resultDICT['plaintiff_feature'].append(args[1])
-        resultDICT['under_18'] = check_plaintiff_feature([args[1]])
-        resultDICT['isWoman'] = check_plaintiff_feature([args[2]])
+        resultDICT['victim_feature'].append(args[1])
+        resultDICT['under_18'] = check_victim_feature([args[1]])
+        resultDICT['isWoman'] = check_victim_feature([args[2]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -86,10 +86,10 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'].append(args[1])
-        resultDICT['plaintiff_feature'].append(args[2])
-        resultDICT['under_18'] = check_plaintiff_feature(args[1:3])
-        resultDICT['isWoman'] = check_plaintiff_feature([args[3]])
+        resultDICT['victim_feature'].append(args[1])
+        resultDICT['victim_feature'].append(args[2])
+        resultDICT['under_18'] = check_victim_feature(args[1:3])
+        resultDICT['isWoman'] = check_victim_feature([args[3]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -97,9 +97,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'].append(args[2])
+        resultDICT['victim_feature'].append(args[2])
         resultDICT['under_18'] = 1
-        resultDICT['isWoman'] = check_plaintiff_feature([args[2]])
+        resultDICT['isWoman'] = check_victim_feature([args[2]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -107,9 +107,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[3])
-        resultDICT['plaintiff_feature'].append(args[2])
+        resultDICT['victim_feature'].append(args[2])
         resultDICT['under_18'] = 1
-        resultDICT['isWoman'] = check_plaintiff_feature([args[2]])
+        resultDICT['isWoman'] = check_victim_feature([args[2]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -117,9 +117,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'].append(args[2])
+        resultDICT['victim_feature'].append(args[2])
         resultDICT['under_18'] = 1
-        resultDICT['isWoman'] = check_plaintiff_feature([args[3]])
+        resultDICT['isWoman'] = check_victim_feature([args[3]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -127,9 +127,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'].append(args[1])
+        resultDICT['victim_feature'].append(args[1])
         resultDICT['under_18'] = 1
-        resultDICT['isWoman'] = check_plaintiff_feature([args[2]])
+        resultDICT['isWoman'] = check_victim_feature([args[2]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
@@ -137,7 +137,7 @@ def getResult(inputSTR, utterance, args, resultDICT):
         # write your code here
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
@@ -148,7 +148,7 @@ def getResult(inputSTR, utterance, args, resultDICT):
         resultDICT['defendent_feature'] = []
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[1])
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
@@ -157,16 +157,16 @@ def getResult(inputSTR, utterance, args, resultDICT):
     if utterance == "[王小明]對[精神障礙]之[人][攜帶兇器]犯[強制]性交[罪]":
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'].append(args[3])
-        resultDICT['plaintiff_feature'].append(args[1])
-        resultDICT['under_18'] = check_plaintiff_feature([args[1]])
-        resultDICT['isWoman'] = check_plaintiff_feature([args[2]])
+        resultDICT['victim_feature'].append(args[1])
+        resultDICT['under_18'] = check_victim_feature([args[1]])
+        resultDICT['isWoman'] = check_victim_feature([args[2]])
         resultDICT['attempt'] = check_attempted(args)
         pass
 
     if utterance == "[王小明]犯[二人以上共同][強制]性交[罪]":
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = ["二人共同犯罪"]
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
@@ -177,7 +177,7 @@ def getResult(inputSTR, utterance, args, resultDICT):
         resultDICT['defendent'].append(args[0])
         resultDICT['defendent'].append(args[1])
         resultDICT['defendent_feature'] = ["二人共同犯罪"]
-        resultDICT['plaintiff_feature'] = args[3]
+        resultDICT['victim_feature'] = args[3]
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
@@ -186,15 +186,15 @@ def getResult(inputSTR, utterance, args, resultDICT):
     if utterance == "[王小明]成年人對[少年]犯[強制]性交[罪]":
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = None
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 1
-        resultDICT['isWoman'] = check_plaintiff_feature([args[1]])
+        resultDICT['isWoman'] = check_victim_feature([args[1]])
         resultDICT['attempt'] = check_attempted(args)
         pass
     if utterance == "[王小明]犯[強制]性交而凌虐[罪]":
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = "凌虐"
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)
@@ -202,9 +202,9 @@ def getResult(inputSTR, utterance, args, resultDICT):
     if utterance == "[王小明]犯[二人以上共同]對[未滿十四歲]之[女子][強制]性交[罪]":
         resultDICT['defendent'] = args[0]
         resultDICT['defendent_feature'] = args[1]
-        resultDICT['plaintiff_feature'] = args[2]
-        resultDICT['under_18'] = check_plaintiff_feature([args[2]])
-        resultDICT['isWoman'] = check_plaintiff_feature([args[3]])
+        resultDICT['victim_feature'] = args[2]
+        resultDICT['under_18'] = check_victim_feature([args[2]])
+        resultDICT['isWoman'] = check_victim_feature([args[3]])
         resultDICT['attempt'] = check_attempted(args)
         pass
     if utterance == "[王小明]犯[攜帶兇器][侵入住宅][強制]性交[罪]":
@@ -212,7 +212,7 @@ def getResult(inputSTR, utterance, args, resultDICT):
         resultDICT['defendent_feature'] = []
         resultDICT['defendent_feature'].append(args[1])
         resultDICT['defendent_feature'].append(args[2])
-        resultDICT['plaintiff_feature'] = None
+        resultDICT['victim_feature'] = None
         resultDICT['under_18'] = 0
         resultDICT['isWoman'] = None
         resultDICT['attempt'] = check_attempted(args)

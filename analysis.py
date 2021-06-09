@@ -38,7 +38,7 @@ def extractor(inputSTR):
     return inputSTR
 
 def arrange_data(judgement):
-  plaintiffLIST = ['甲女', 'A女', 'Ａ女','甲○○', '甲○']
+  victimLIST = ['甲女', 'A女', 'Ａ女','甲○○', '甲○']
   with open (judgement, "r") as f:
     data = json.load(f)
   dataLen = len(data)
@@ -61,8 +61,8 @@ def arrange_data(judgement):
           sentence, status, *original = change_name(originalSentence_split) # original = pronoun (list), alias (string), gender (string)
         except:
           i['defendent'] = ""
-          i['plaintiff'] = ""
-          i['plaintiff_feature'] = ""
+          i['victim'] = ""
+          i['victim_feature'] = ""
           i['defendent_feature'] = ""
           i['under_18'] = ""
           i['attempt'] = ""
@@ -85,22 +85,22 @@ def arrange_data(judgement):
           print("RunLoki(originalSentence_{})".format(data.index(i)))
           resultDICT_0 = runLoki([sentence])
         try:
-          i['plaintiff'] =[plaintiff for plaintiff in plaintiffLIST if plaintiff in originalJudgement][0]
+          i['victim'] =[victim for victim in victimLIST if victim in originalJudgement][0]
         except:
-          i['plaintiff'] = "需人工確認"
+          i['victim'] = "需人工確認"
         try:
           # 被告
           # print("status:", status)
           if status == 1:
             if '0' in originalSentence: # 被告欄位為000000A類型
-              if originalJudgement.partition("下稱")[2][0:2] != i['plaintiff']: # 內文第一個下稱不是原告時
+              if originalJudgement.partition("下稱")[2][0:2] != i['victim']: # 內文第一個下稱不是原告時
                 i['defendent'] = originalJudgement.partition("下稱")[2][0:2]
-              elif originalJudgement.partition("下稱")[2][0:2] == i['plaintiff']: # 內文第一個下稱是被告時，找下一個下稱
+              elif originalJudgement.partition("下稱")[2][0:2] == i['victim']: # 內文第一個下稱是被告時，找下一個下稱
                 i['defendent'] = originalJudgement.partition("下稱")[2].partition("下稱")[2][0:2]
-              elif originalJudgement.partition("呼為")[2][0:2] != i['plaintiff']: # 內文第一個呼為是被告時，找下一個呼為
-                i['plaintiff'] = '乙女'
+              elif originalJudgement.partition("呼為")[2][0:2] != i['victim']: # 內文第一個呼為是被告時，找下一個呼為
+                i['victim'] = '乙女'
                 i['defendent'] = originalJudgement.partition("呼為")[2][0:2]
-          #   elif originalJudgement.partition("呼為")[2][0:2] == i['plaintiff']: # 內文第一個呼為是被告時，找下一個呼為
+          #   elif originalJudgement.partition("呼為")[2][0:2] == i['victim']: # 內文第一個呼為是被告時，找下一個呼為
           #     i['defendent'] = originalJudgement.partition("呼為")[2].partition("呼為")[2].partition("呼為")[2][0:2]
             elif '現役軍人' in originalSentence: # 被告為現役軍人
               i['defendent'] = originalSentence.partition("現役軍人")[0]
@@ -113,7 +113,7 @@ def arrange_data(judgement):
           elif status == 0:
             # print(resultDICT_0)
             i['defendent'] = resultDICT_0['defendent']
-            i['plaintiff_feature'] = resultDICT_0['plaintiff_feature']
+            i['victim_feature'] = resultDICT_0['victim_feature']
             i['defendent_feature'] = resultDICT_0['defendent_feature']
             i['under_18'] = resultDICT_0['under_18']
             i['attempt'] = resultDICT_0['attempt']
@@ -123,12 +123,12 @@ def arrange_data(judgement):
               i['annulment'] = 1
             else:
               i['annulment'] = 0
-            print("原告:{}".format(i['plaintiff']), "被告:{}".format(i['defendent']), "是否曾被撤銷:{}".format(i['annulment']), "被害人特點:{}".format(i['plaintiff_feature']), "加害人特點:{}".format(i['defendent_feature']), "未成年:{}".format(i['under_18']), "未遂:{}".format(i['attempt']), "是否為女性:{}".format(i['isWoman']),"加重:{}".format(i['aggravate']), "\n連結:{}".format(i['url']))
+            print("原告:{}".format(i['victim']), "被告:{}".format(i['defendent']), "是否曾被撤銷:{}".format(i['annulment']), "被害人特點:{}".format(i['victim_feature']), "加害人特點:{}".format(i['defendent_feature']), "未成年:{}".format(i['under_18']), "未遂:{}".format(i['attempt']), "是否為女性:{}".format(i['isWoman']),"加重:{}".format(i['aggravate']), "\n連結:{}".format(i['url']))
             break
         except:
           i['defendent'] = "需人工確認"
-          # i['plaintiff'] = ""
-          i['plaintiff_feature'] = ""
+          # i['victim'] = ""
+          i['victim_feature'] = ""
           i['defendent_feature'] = ""
           i['under_18'] = ""
           i['attempt'] = ""
@@ -144,7 +144,7 @@ def arrange_data(judgement):
           i['annulment'] = 0
         try:
           # 被害人特點：精神障礙/心智缺陷/身體障礙/未滿十四歲/少年
-          i['plaintiff_feature'] = resultDICT_1['plaintiff_feature']
+          i['victim_feature'] = resultDICT_1['victim_feature']
           # 加害人特點：攜帶兇器/侵入住宅/對被害人施以凌虐
           i['defendent_feature'] = resultDICT_1['defendent_feature']
           # 未成年
@@ -152,16 +152,16 @@ def arrange_data(judgement):
           # 是否未遂
           i['attempt'] = resultDICT_1['attempt']
           # 受害者是否為女性
-          if "女" in i['plaintiff']:
+          if "女" in i['victim']:
             i['isWoman'] = 1
           else:
             i['isWoman'] = resultDICT_1['isWoman']
           i['info'] = ""
-          print("原告:{}".format(i['plaintiff']), "被告:{}".format(i['defendent']), "是否曾被撤銷:{}".format(i['annulment']), "被害人特點:{}".format(i['plaintiff_feature']), "加害人特點:{}".format(i['defendent_feature']), "未成年:{}".format(i['under_18']), "未遂:{}".format(i['attempt']), "是否為女性:{}".format(i['isWoman']), "加重:{}".format(i['aggravate']), "\n連結:{}".format(i['url']))
+          print("原告:{}".format(i['victim']), "被告:{}".format(i['defendent']), "是否曾被撤銷:{}".format(i['annulment']), "被害人特點:{}".format(i['victim_feature']), "加害人特點:{}".format(i['defendent_feature']), "未成年:{}".format(i['under_18']), "未遂:{}".format(i['attempt']), "是否為女性:{}".format(i['isWoman']), "加重:{}".format(i['aggravate']), "\n連結:{}".format(i['url']))
         except:
           i['defendent'] = "需人工確認"
-          # i['plaintiff'] = ""
-          i['plaintiff_feature'] = ""
+          # i['victim'] = ""
+          i['victim_feature'] = ""
           i['defendent_feature'] = ""
           i['under_18'] = ""
           i['attempt'] = ""
@@ -200,12 +200,11 @@ def data_modify(judgement):
   with open (judgement, "r") as f:
     data = json.load(f)
   defendentLIST = ['攜帶兇器', '侵入住宅', '以藥劑', '對被害人施以凌虐', '共同', '兩人以上共同', '二人以上共同',  '二人共同犯罪', '強盜']
-  plaintiffLIST = ['精神障礙', '心智缺陷', '身體障礙', '未滿十四歲', '未滿十八歲', '未滿14歲', '未滿18歲', '十四歲以上未滿十八歲', '14歲以上未滿18歲', '少年', '女子', '十四歲以上未滿十六歲']
+  victimLIST = ['精神障礙', '心智缺陷', '身體障礙', '未滿十四歲', '未滿十八歲', '未滿14歲', '未滿18歲', '十四歲以上未滿十八歲', '14歲以上未滿18歲', '少年', '女子', '十四歲以上未滿十六歲']
   judgement_defendent = []
-  judgement_plaintiff = []
+  judgement_victim = []
   judgement_correct = []
-  judgement_other_p = []
-  judgement_other_d = []
+  judgement_other = []
   judgement_exception = []
   judgement_plt_dft = []
   aliasLIST = ["○○○", "◯◯◯", "○○", "◯◯", "ＯＯ"]
@@ -215,16 +214,21 @@ def data_modify(judgement):
   for i in data:
     if i['info'] != "":
       judgement_exception.append(i)
-    elif "小明" in i['plaintiff'] or '小明' in i['defendent'] and i['info'] == "":
+    elif "小明" in i['victim'] or '小明' in i['defendent'] and i['info'] == "":
       judgement_plt_dft.append(i)
-    elif i['plaintiff'] == i['defendent'] and i['info'] == "":
+    elif i['victim'] == i['defendent'] and i['info'] == "":
       judgement_plt_dft.append(i)
-    elif i['plaintiff'] == "需人工確認" and i['defendent'] == "" and i['info'] == "":
+    elif i['victim'] == "需人工確認" and i['defendent'] == "" and i['info'] == "":
       judgement_plt_dft.append(i)
-    elif i['plaintiff'] == "需人工確認" and i['defendent'] != "" and i['defendent'] != "需人工確認" and i['info'] == "":
-      judgement_plaintiff.append(i)
-    elif i['plaintiff'] != "需人工確認" and i['defendent'] == "" and i['info'] == "":
+    elif i['victim'] == "需人工確認" and i['defendent'] != "" and i['defendent'] != "需人工確認" and i['info'] == "" or '女' in i['defendent']:
+      judgement_victim.append(i)
+    elif i['victim'] != "需人工確認" and i['defendent'] == "" and i['info'] == "":
       judgement_defendent.append(i)
+    # elif i['victim_feature'] not in victimLIST or i['defendent_feature'] not in defendentLIST:
+    #   if i['victim_feature'] == None or i['defendent_feature'] == None:
+    #     pass
+    #   else:
+    #     judgement_other.append(i)
     
     # if i['defendent_feature'] != None:
     #   if type(i['defendent_feature']) == list:
@@ -233,16 +237,16 @@ def data_modify(judgement):
     #         judgement_other_d.append(i)
     #   if i['defendent_feature'] not in defendentLIST:
     #     judgement_other_d.append(i)
-    # if i['plaintiff_feature'] != None:
-    #   for j in i['plaintiff_feature']:
-    #     if j not in plaintiffLIST:
+    # if i['victim_feature'] != None:
+    #   for j in i['victim_feature']:
+    #     if j not in victimLIST:
     #       print(j)
     #       judgement_other_p.append(i)
     else:
       judgement_correct.append(i)
       continue
-  with open("judgement_plaintiff.json", "w", encoding = "utf-8") as f:
-    json.dump(judgement_plaintiff, f, ensure_ascii = False, indent = 4)
+  with open("judgement_victim.json", "w", encoding = "utf-8") as f:
+    json.dump(judgement_victim, f, ensure_ascii = False, indent = 4)
   with open("judgement_plt_dft.json", "w", encoding = "utf-8") as f:
     json.dump(judgement_plt_dft, f, ensure_ascii = False, indent = 4)
   with open("judgement_defendent.json", "w", encoding = "utf-8") as f:
@@ -253,6 +257,10 @@ def data_modify(judgement):
   #   json.dump(judgement_other_p, f, ensure_ascii = False, indent = 4)
   with open("judgement_exception.json", "w", encoding = "utf-8") as f:
     json.dump(judgement_exception, f, ensure_ascii = False, indent = 4)
+  with open("judgement_correct.json", "w", encoding = "utf-8") as f:
+    json.dump(judgement_correct, f, ensure_ascii = False, indent = 4)
+  # with open("judgement_other.json", "w", encoding = "utf-8") as f:
+    # json.dump(judgement_other, f, ensure_ascii = False, indent = 4)
   
 
 
@@ -305,7 +313,7 @@ def data_collector(inputDICT):
 if __name__ == '__main__':
   # judgement = arrange_data("judgement.json")
   # with open("judgement_arrange.json", "w", encoding = "utf-8") as f:
-  #   json.dump(judgement, f, ensure_ascii = False, indent = 4)
+    # json.dump(judgement, f, ensure_ascii = False, indent = 4)
   data_modify("judgement_arrange.json")
   # lawsuitLIST = []
   # for lawsuit in judgementLIST:
